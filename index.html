@@ -14,11 +14,28 @@
 
     body {
       font-family: Georgia, "Times New Roman", serif;
-      background: radial-gradient(circle at top, #3b0910 0%, #190208 45%, #050104 100%);
+      background:
+        radial-gradient(circle at top, #4c1018 0%, #1b0308 45%, #050104 100%);
       color: #fdf4e3;
       min-height: 100vh;
       overflow-x: hidden;
       padding: 20px;
+      position: relative;
+    }
+
+    /* Leichte Lichtpunkte im Hintergrund */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255, 230, 180, 0.08) 0, transparent 55%),
+        radial-gradient(circle at 80% 0, rgba(255, 255, 255, 0.05) 0, transparent 60%),
+        radial-gradient(circle at 10% 70%, rgba(200, 60, 40, 0.18) 0, transparent 55%),
+        radial-gradient(circle at 90% 80%, rgba(240, 200, 120, 0.14) 0, transparent 60%);
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: -1;
     }
 
     .page {
@@ -79,25 +96,41 @@
     .door {
       position: relative;
       perspective: 900px;
-      padding: 2px; /* Rahmen */
-      border-radius: 14px;
-      background: radial-gradient(circle at top, #ffdd9a 0%, #8a471f 45%, #3c130a 90%);
+      padding: 3px;
+      border-radius: 15px;
+      background:
+        radial-gradient(circle at top, #ffde9a 0%, #a64223 45%, #4a150a 95%);
       box-shadow:
-        0 0 0 1px rgba(0, 0, 0, 0.8),
-        0 14px 26px rgba(0, 0, 0, 0.9);
+        0 0 0 1px rgba(0, 0, 0, 0.85),
+        0 16px 28px rgba(0, 0, 0, 0.95);
+      overflow: hidden;
+    }
+
+    .door-special {
+      background:
+        radial-gradient(circle at top, #ffe8b5 0%, #cf3f27 40%, #5e170c 95%);
+      box-shadow:
+        0 0 0 1px rgba(255, 220, 160, 0.6),
+        0 20px 34px rgba(0, 0, 0, 1),
+        0 0 22px rgba(255, 230, 180, 0.55);
     }
 
     .door-inner {
       position: relative;
       border-radius: 12px;
-      padding: 16px 10px;
+      padding: 24px 8px;
       text-align: center;
       cursor: pointer;
-      background: linear-gradient(145deg, #4a120f, #8b231f);
+      background:
+        linear-gradient(145deg, #5a1a14, #9c261d);
       box-shadow:
         inset 0 0 0 1px rgba(255, 255, 255, 0.06);
       transform-origin: left center;
-      transition: transform 0.55s ease, box-shadow 0.2s ease, background 0.2s ease;
+      transition:
+        transform 0.55s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease,
+        filter 0.2s ease;
     }
 
     .door-inner::before {
@@ -105,37 +138,20 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(circle at 15% 0, rgba(255, 255, 255, 0.16) 0, transparent 55%),
-        radial-gradient(circle at 80% 0, rgba(255, 244, 214, 0.14) 0, transparent 60%);
-      opacity: 0.85;
+        radial-gradient(circle at 18% 0, rgba(255, 255, 255, 0.18) 0, transparent 55%),
+        radial-gradient(circle at 85% 0, rgba(255, 244, 214, 0.18) 0, transparent 60%),
+        linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+      opacity: 0.9;
       pointer-events: none;
     }
 
-    .door-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: #ffdba0;
-      margin-bottom: 8px;
-      position: relative;
-      z-index: 1;
-    }
-
     .door-number {
-      font-size: 22px;
+      font-size: 26px;
       font-weight: bold;
-      color: #fff6de;
-      margin-bottom: 4px;
-      text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
-      position: relative;
-      z-index: 1;
-    }
-
-    .door-locked-hint {
-      font-size: 10px;
-      color: #f4c7b0;
-      opacity: 0.85;
-      margin-top: 4px;
+      color: #fff7e0;
+      text-shadow:
+        0 0 10px rgba(0, 0, 0, 0.8),
+        0 0 18px rgba(255, 250, 230, 0.4);
       position: relative;
       z-index: 1;
     }
@@ -143,35 +159,48 @@
     .door-inner:hover {
       box-shadow:
         inset 0 0 0 1px rgba(255, 255, 255, 0.12),
-        0 0 18px rgba(255, 230, 180, 0.35);
-      background: linear-gradient(145deg, #6a1815, #b7302a);
+        0 0 18px rgba(255, 230, 180, 0.45);
+      background: linear-gradient(145deg, #7a2219, #c43025);
+      filter: brightness(1.05);
     }
 
     .door-inner.opened {
-      transform: rotateY(-100deg);
+      transform: rotateY(-80deg);
+      box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, 0.4),
+        0 18px 26px rgba(0, 0, 0, 0.9);
     }
 
     .door.locked .door-inner {
       cursor: not-allowed;
-      filter: grayscale(0.3);
-      opacity: 0.6;
+      filter: grayscale(0.35) brightness(0.9);
+      opacity: 0.7;
     }
 
     .door.locked .door-inner:hover {
       box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04),
         0 0 10px rgba(0, 0, 0, 0.7);
       transform: none;
+      filter: grayscale(0.4) brightness(0.9);
     }
 
-    .door-special {
-      background: radial-gradient(circle at top, #ffe39d 0%, #c33b28 45%, #5a120b 95%);
+    .door-inside {
+      position: absolute;
+      inset: 6px;
+      border-radius: 10px;
+      background:
+        radial-gradient(circle at top, #54311c 0%, #2b1208 50%, #140807 100%);
+      box-shadow:
+        inset 0 0 18px rgba(0, 0, 0, 0.95),
+        0 0 12px rgba(0, 0, 0, 0.9);
+      z-index: -1;
     }
 
     .footer-note {
       margin-top: 20px;
       font-size: 11px;
-      color: #f1d5b5;
+      color: #f3d9b9;
       text-align: center;
       opacity: 0.9;
     }
@@ -180,7 +209,7 @@
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       display: none;
       align-items: center;
       justify-content: center;
@@ -189,16 +218,16 @@
     }
 
     .modal {
-      background: radial-gradient(circle at top, #4a1a14 0%, #260d0b 45%, #130706 100%);
+      background: radial-gradient(circle at top, #4a1b16 0%, #260d0b 45%, #140807 100%);
       border-radius: 18px;
       max-width: 520px;
       width: 100%;
       padding: 22px 22px 18px;
       box-shadow:
-        0 18px 40px rgba(0, 0, 0, 0.95),
-        0 0 24px rgba(255, 221, 170, 0.4);
+        0 20px 42px rgba(0, 0, 0, 0.98),
+        0 0 24px rgba(255, 221, 170, 0.45);
       position: relative;
-      border: 1px solid rgba(255, 215, 160, 0.7);
+      border: 1px solid rgba(255, 215, 160, 0.8);
     }
 
     .modal-close-x {
@@ -243,7 +272,7 @@
       color: #f0c9a5;
       font-style: italic;
       margin-bottom: 10px;
-      border-left: 2px solid rgba(255, 215, 160, 0.7);
+      border-left: 2px solid rgba(255, 215, 160, 0.8);
       padding-left: 8px;
     }
 
@@ -299,8 +328,8 @@
 
     .email-btn:hover {
       box-shadow:
-        0 12px 24px rgba(0, 0, 0, 0.95),
-        0 0 18px rgba(255, 230, 180, 0.85);
+        0 12px 24px rgba(0, 0, 0, 0.98),
+        0 0 18px rgba(255, 230, 180, 0.9);
       transform: translateY(-1px);
     }
 
@@ -316,7 +345,11 @@
       cursor: pointer;
     }
 
-    /* Snow */
+    .modal-hint {
+      max-width: 260px;
+    }
+
+    /* Schneeflocken */
     .snowflake {
       position: fixed;
       top: -10px;
@@ -331,24 +364,70 @@
       0% { transform: translateY(0); }
       100% { transform: translateY(110vh); }
     }
+
+    /* Admin-Toggle */
+    .admin-toggle {
+      position: fixed;
+      top: 8px;
+      right: 10px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #f4c66c 0%, #8b3a23 70%);
+      box-shadow:
+        0 0 8px rgba(0, 0, 0, 0.9),
+        0 0 10px rgba(255, 220, 170, 0.7);
+      cursor: pointer;
+      border: 1px solid rgba(255, 230, 180, 0.7);
+      opacity: 0.45;
+      transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      z-index: 1100;
+    }
+
+    .admin-toggle:hover {
+      opacity: 0.9;
+      transform: scale(1.05);
+    }
+
+    .admin-toggle.active {
+      opacity: 1;
+      box-shadow:
+        0 0 10px rgba(255, 230, 180, 0.9),
+        0 0 18px rgba(255, 80, 80, 0.9);
+    }
+
+    .admin-toggle-indicator {
+      position: fixed;
+      top: 30px;
+      right: 14px;
+      font-size: 10px;
+      color: #f6d9b7;
+      opacity: 0.85;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
   <div id="snow"></div>
+
+  <button class="admin-toggle" id="adminToggle" title="Admin"></button>
+  <div class="admin-toggle-indicator" id="adminIndicator" style="display:none;">
+    Testmodus aktiv
+  </div>
 
   <div class="page">
     <header class="header">
       <div class="brand">VikingLuck · VIP Adventskalender</div>
       <h1 class="title">24 Tage · 24 exklusive Angebote</h1>
       <p class="subtitle">
-        Weihnachtskalender – aktuell komplett freigeschaltet zum Testen.
+        Standard: Türen öffnen sich im Dezember am jeweiligen Kalendertag – über Admin-Passwort kannst du den Testmodus aktivieren.
       </p>
     </header>
 
     <main>
       <section class="calendar" id="calendar"></section>
       <p class="footer-note">
-        Alle Angebote sind für den späteren Live-Betrieb an die jeweiligen Kalendertage gebunden – aktuell sind alle Türen zur internen Vorschau geöffnet.
+        Im Live-Betrieb gilt: Jedes Angebot ist streng an seinen Kalendertag gebunden. Im Testmodus sind alle Türen freigeschaltet.
       </p>
     </main>
   </div>
@@ -366,7 +445,7 @@
       <div class="modal-body" id="modalBody"></div>
       <div class="modal-footer">
         <div class="modal-hint">
-          Aktivierung erfolgt über deinen VIP Account Manager bzw. wie mit dir vereinbart.
+          Aktivierung erfolgt über deinen VIP Account Manager bzw. wie mit dir persönlich vereinbart.
         </div>
         <div class="modal-actions" id="modalActions"></div>
       </div>
@@ -377,7 +456,7 @@
     /* ---------------- Schneefall ---------------- */
     function createSnow() {
       const snowContainer = document.getElementById("snow");
-      for (let i = 0; i < 60; i++) {
+      for (let i = 0; i < 70; i++) {
         const el = document.createElement("div");
         el.className = "snowflake";
         el.textContent = "•";
@@ -395,7 +474,7 @@
       {
         day: 1,
         title: "100€ Bonus – starker Auftakt",
-        subtitle: "Wer ernst spielen will, startet nicht mit Kleingeld.",
+        subtitle: "Wer ernst spielt, startet nicht mit Kleingeld.",
         quote: "Guter Dezember beginnt nicht mit Hoffnung, sondern mit Balance.",
         bodyHtml: `
           <p>Zum 1. Dezember gibt es einen klaren Einstieg:</p>
@@ -598,7 +677,7 @@
       {
         day: 15,
         title: "5 Tickets für die Ticketkampagne",
-        subtitle: "Je mehr Volumen, desto weniger Zufall.",
+        subtitle: "Mehr Volumen, weniger Zufall.",
         quote: "Du kannst den Ausgang nicht kontrollieren – aber deine Chancen schon.",
         bodyHtml: `
           <p>Zum 15. Dezember:</p>
@@ -736,19 +815,25 @@
       }
     ];
 
-    const calendarEl = document.getElementById("calendar");
+    const calendarEl   = document.getElementById("calendar");
     const modalBackdrop = document.getElementById("modalBackdrop");
-    const modalDay = document.getElementById("modalDay");
-    const modalTitle = document.getElementById("modalTitle");
+    const modalDay     = document.getElementById("modalDay");
+    const modalTitle   = document.getElementById("modalTitle");
     const modalSubtitle = document.getElementById("modalSubtitle");
-    const modalQuote = document.getElementById("modalQuote");
-    const modalBody = document.getElementById("modalBody");
+    const modalQuote   = document.getElementById("modalQuote");
+    const modalBody    = document.getElementById("modalBody");
     const modalActions = document.getElementById("modalActions");
-    const modalCloseX = document.getElementById("modalCloseX");
+    const modalCloseX  = document.getElementById("modalCloseX");
+
+    const adminToggle  = document.getElementById("adminToggle");
+    const adminIndicator = document.getElementById("adminIndicator");
+
+    let testMode = false;
+    const doorEntries = [];
+    const today = new Date();
+    const year = today.getFullYear();
 
     /* ---------------- Kalender rendern ---------------- */
-    const today = new Date();
-
     offers.forEach((offer) => {
       const door = document.createElement("article");
       door.className = "door";
@@ -756,23 +841,14 @@
         door.classList.add("door-special");
       }
 
-      // später für echtes Live-Setup:
-      // const liveDate = new Date(2025, 11, offer.day); // 0=Jan, 11=Dez
-      // if (liveDate > today) door.classList.add("locked");
-
       const inner = document.createElement("div");
       inner.className = "door-inner";
-      inner.innerHTML = `
-        <div class="door-label">Tür ${offer.day}</div>
-        <div class="door-number">${offer.day}</div>
-      `;
+      inner.innerHTML = `<div class="door-number">${offer.day}</div>`;
 
-      if (door.classList.contains("locked")) {
-        const hint = document.createElement("div");
-        hint.className = "door-locked-hint";
-        hint.textContent = "Noch geschlossen";
-        inner.appendChild(hint);
-      }
+      const inside = document.createElement("div");
+      inside.className = "door-inside";
+
+      const liveDate = new Date(year, 11, offer.day); // Dezember (0=Jan, 11=Dez)
 
       inner.addEventListener("click", () => {
         if (door.classList.contains("locked")) return;
@@ -781,8 +857,27 @@
       });
 
       door.appendChild(inner);
+      door.appendChild(inside);
       calendarEl.appendChild(door);
+
+      doorEntries.push({ door, inner, liveDate });
     });
+
+    function updateDoorLockStates() {
+      doorEntries.forEach(({ door, liveDate }) => {
+        if (testMode) {
+          door.classList.remove("locked");
+        } else {
+          if (today < liveDate) {
+            door.classList.add("locked");
+          } else {
+            door.classList.remove("locked");
+          }
+        }
+      });
+    }
+
+    updateDoorLockStates();
 
     /* ---------------- Modal-Logik ---------------- */
     function openModal(offer, innerEl) {
@@ -792,7 +887,6 @@
       modalQuote.textContent = offer.quote || "";
       modalBody.innerHTML = offer.bodyHtml;
 
-      // E-Mail-Link erstellen
       const greeting = "Guten Morgen,\n\n";
       const lineOffer = "ich öffne gerade Tür " + offer.day + " im VikingLuck Adventskalender.\n\n";
       const lineDetails = "Angebot:\n" + offer.emailText + "\n\n";
@@ -809,17 +903,13 @@
         <a class="email-btn" href="${mailtoHref}">
           Angebot per E-Mail senden
         </a>
-        <button class="close-btn" onclick="closeModal()">Schließen</button>
+        <button class="close-btn" type="button" onclick="closeModal()">
+          Schließen
+        </button>
       `;
 
       modalBackdrop.style.display = "flex";
-
-      // Beim Schließen Tür wieder „zu“ machen
-      modalBackdrop.dataset.lastDoorId = "";
-      if (innerEl) {
-        modalBackdrop.dataset.lastDoorId = "";
-        modalBackdrop._lastInner = innerEl;
-      }
+      modalBackdrop._lastInner = innerEl || null;
     }
 
     function closeModal() {
@@ -837,6 +927,25 @@
     });
 
     modalCloseX.addEventListener("click", closeModal);
+
+    /* ---------------- Admin-Toggle mit Passwort 676767 ---------------- */
+    adminToggle.addEventListener("click", () => {
+      const pw = prompt("Admin-Passwort eingeben:");
+      if (pw === null) return;
+      if (pw === "676767") {
+        testMode = !testMode;
+        updateDoorLockStates();
+        if (testMode) {
+          adminToggle.classList.add("active");
+          adminIndicator.style.display = "block";
+        } else {
+          adminToggle.classList.remove("active");
+          adminIndicator.style.display = "none";
+        }
+      } else {
+        alert("Falsches Passwort.");
+      }
+    });
   </script>
 </body>
 </html>

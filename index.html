@@ -2,400 +2,708 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>VikingLuck – Adventskalender</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VikingLuck Adventskalender</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
-    :root {
-      --bg-page-top: #f5f7fb;
-      --bg-page-bottom: #dfe7f5;
-      --bg-panel: rgba(255,255,255,0.88);
-      --bg-card: rgba(255,255,255,0.9);
-      --bg-card-open: #faf5e6;
-      --bg-locked: #d0d6e4;
-      --gold: #c99a2f;
-      --accent: #2a6fb0;
-      --border-soft: rgba(0,0,0,0.09);
-      --text-main: #1b2333;
-      --text-muted: #616c80;
-      --shadow-soft: 0 18px 40px rgba(15,28,58,0.25);
-      --radius: 18px;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin:0;
-      padding:0;
-      font-family: system-ui, sans-serif;
-      background:
-        radial-gradient(circle at 10% 0%, rgba(255,255,255,0.9) 0, rgba(250,250,255,0.7) 22%, rgba(223,231,245,0.9) 55%, #c8d4ec 100%);
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
+      font-family: "Georgia", "Times New Roman", serif;
+      background: radial-gradient(circle at top, #3d2814 0%, #120b06 45%, #050304 100%);
+      color: #f5f0e6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
 
-    .page { width:100%; max-width:1200px; margin:auto; }
-
-    .header { text-align:center; margin-bottom:24px; }
-
-    .logo {
-      font-family:"Times New Roman", serif;
-      font-size:1.5rem;
-      text-transform:uppercase;
-      letter-spacing:0.25em;
-      color:var(--gold);
+    .page {
+      max-width: 1100px;
+      width: 100%;
     }
+
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .brand {
+      font-size: 15px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #c8a46a;
+      margin-bottom: 8px;
+    }
+
     .title {
-      font-family:"Times New Roman", serif;
-      font-size:2.4rem;
-      letter-spacing:0.12em;
-      color:#1b2230;
-      text-transform:uppercase;
+      font-size: 32px;
+      letter-spacing: 0.05em;
+      color: #f2e4c9;
+      text-shadow: 0 0 12px rgba(0, 0, 0, 0.7);
+      margin-bottom: 6px;
     }
 
     .subtitle {
-      font-size:0.95rem;
-      color:var(--text-muted);
-      max-width:520px;
-      margin:0 auto;
+      font-size: 14px;
+      color: #d8c7a2;
+      opacity: 0.9;
     }
 
-    .calendar-wrapper {
-      background:var(--bg-panel);
-      border-radius:26px;
-      padding:24px;
-      box-shadow:var(--shadow-soft);
-      border:1px solid rgba(255,255,255,0.9);
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 24px;
     }
 
-    .calendar-top-bar {
-      display:flex;
-      justify-content:space-between;
-      margin-bottom:16px;
-      flex-wrap:wrap;
-      gap:10px;
+    @media (max-width: 900px) {
+      .calendar {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
     }
 
-    .calendar-info { font-size:0.85rem; color:var(--text-muted); }
-    .calendar-info strong { color:var(--accent); }
-    .calendar-info .highlight { color:var(--gold); font-weight:600; }
+    @media (max-width: 600px) {
+      .calendar {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
 
-    .legend { font-size:0.8rem; color:var(--text-muted); display:flex; gap:12px; }
-
-    .legend-dot {
-      width:10px; height:10px; border-radius:50%;
-    }
-    .legend-dot--open { background:var(--gold); }
-    .legend-dot--today { background:var(--accent); }
-    .legend-dot--locked { background:var(--bg-locked); border:1px solid var(--border-soft); }
-
-    .calendar-grid {
-      display:grid;
-      grid-template-columns:repeat(6,1fr);
-      gap:14px;
+      .title {
+        font-size: 24px;
+      }
     }
 
-    @media(max-width:900px){ .calendar-grid{ grid-template-columns:repeat(4,1fr);} }
-    @media(max-width:640px){ .calendar-grid{ grid-template-columns:repeat(3,1fr);} }
-
-    .day {
-      background:var(--bg-card);
-      border-radius:var(--radius);
-      border:1px solid var(--border-soft);
-      padding:14px;
-      cursor:pointer;
-      min-height:90px;
-      position:relative;
-      text-align:left;
-      transition:0.15s;
+    .door {
+      position: relative;
+      border-radius: 12px;
+      padding: 16px 10px;
+      text-align: center;
+      cursor: pointer;
+      background: linear-gradient(145deg, #2b1a0c, #4c3118);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.6),
+        0 10px 20px rgba(0, 0, 0, 0.8),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      overflow: hidden;
     }
 
-    .day:hover {
-      transform:translateY(-2px);
-      box-shadow:0 10px 24px rgba(129,144,180,0.55);
-      border-color:rgba(42,111,176,0.5);
+    .door::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 0, rgba(255, 255, 255, 0.08) 0, transparent 55%);
+      opacity: 0.7;
+      pointer-events: none;
     }
 
-    .day-number {
-      font-family:"Times New Roman", serif;
-      font-size:1.5rem;
-      font-weight:700;
-      text-transform:uppercase;
-      color:#1b2230;
+    .door-number {
+      font-size: 20px;
+      font-weight: bold;
+      color: #f9f1dd;
+      margin-bottom: 4px;
+      text-shadow: 0 0 6px rgba(0, 0, 0, 0.7);
     }
 
-    .day-label {
-      margin-top:4px;
-      font-size:0.8rem;
-      color:var(--text-muted);
+    .door-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #c8a46a;
+      margin-bottom: 8px;
     }
 
-    .day--locked {
-      background:linear-gradient(145deg,#d0d6e4,#c3cad9);
-      border-color:rgba(148,156,175,0.8);
-      cursor:default;
+    .door-teaser {
+      font-size: 11px;
+      color: #e2d7bf;
+      opacity: 0.95;
     }
 
-    .day--open {
-      background:#faf5e6;
-      border-color:var(--gold);
-      box-shadow:0 0 0 1px rgba(201,154,47,0.4), var(--shadow-soft);
+    .door-highlight {
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 214, 137, 0.55);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
     }
 
-    .day--open .day-number { color:var(--gold); }
-
-    .day--open:after {
-      content:"Geöffnet";
-      position:absolute;
-      top:8px; right:10px;
-      font-size:0.6rem;
-      color:var(--gold);
-      text-transform:uppercase;
+    .door:hover {
+      transform: translateY(-3px);
+      background: linear-gradient(145deg, #3a2310, #603a1a);
+      box-shadow:
+        0 14px 28px rgba(0, 0, 0, 0.9),
+        0 0 18px rgba(199, 160, 95, 0.35);
     }
 
-    .day--locked:before {
-      content:"Gesperrt";
-      position:absolute;
-      top:10px; right:10px;
-      font-size:0.6rem;
-      color:#6f788b;
+    .door:hover .door-highlight {
+      opacity: 1;
     }
 
-    .day--today {
-      border-color:var(--accent);
-      background:linear-gradient(135deg,#ffffff,#e5f1ff);
+    .door-special {
+      background: radial-gradient(circle at top, #6f3f13 0%, #3a2310 40%, #2b180b 100%);
     }
 
-    .day-ribbon {
-      display:none;
-      position:absolute;
-      left:-32px; top:14px;
-      width:92px;
-      background:linear-gradient(90deg,#2a6fb0,#58a2e6);
-      padding:2px 0;
-      font-size:0.55rem;
-      color:#fff;
-      text-transform:uppercase;
-      transform:rotate(-38deg);
-      text-align:center;
+    .door-special .door-label {
+      color: #f4d48a;
     }
-    .day--today .day-ribbon { display:block; }
+
+    .footer-note {
+      margin-top: 18px;
+      font-size: 11px;
+      color: #c2b59c;
+      text-align: center;
+      opacity: 0.85;
+    }
 
     /* Modal */
     .modal-backdrop {
-      position:fixed;
-      inset:0;
-      background:rgba(7,15,31,0.75);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:40;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 15px;
     }
-    .modal-backdrop--visible { display:flex; }
 
     .modal {
-      max-width:480px;
-      width:100%;
-      background:#ffffff;
-      border-radius:20px;
-      padding:22px;
-      border:1px solid rgba(201,154,47,0.6);
-      box-shadow:0 20px 45px rgba(10,16,32,0.65);
+      background: radial-gradient(circle at top, #3b2612 0%, #140c07 45%, #0b0704 100%);
+      border-radius: 16px;
+      max-width: 520px;
+      width: 100%;
+      padding: 22px 22px 18px;
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(215, 178, 109, 0.35);
+      position: relative;
+      border: 1px solid rgba(215, 178, 109, 0.5);
     }
 
-    .modal-close {
-      border:none;
-      background:transparent;
-      font-size:1.1rem;
-      cursor:pointer;
-      color:var(--text-muted);
+    .modal-header {
+      margin-bottom: 14px;
+    }
+
+    .modal-day {
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #c8a46a;
+      margin-bottom: 6px;
     }
 
     .modal-title {
-      font-family:"Times New Roman", serif;
-      font-size:1.4rem;
-      color:var(--gold);
-      text-transform:uppercase;
+      font-size: 20px;
+      color: #f5e7cc;
+      margin-bottom: 4px;
     }
 
-    .btn-primary {
-      padding:7px 16px;
-      background:linear-gradient(135deg,#f4dc8d,#c99a2f);
-      border:none;
-      border-radius:999px;
-      text-transform:uppercase;
-      font-size:0.8rem;
-      cursor:pointer;
-      color:#251d0b;
-      letter-spacing:0.12em;
+    .modal-subtitle {
+      font-size: 13px;
+      color: #e2d4b6;
+      opacity: 0.95;
     }
+
+    .modal-body {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #f0e4cb;
+      line-height: 1.55;
+    }
+
+    .modal-body ul {
+      margin: 8px 0 0 18px;
+    }
+
+    .modal-body li {
+      margin-bottom: 4px;
+    }
+
+    .modal-footer {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .modal-hint {
+      font-size: 11px;
+      color: #c4b79c;
+      opacity: 0.9;
+    }
+
+    .modal-close-btn {
+      border: none;
+      background: linear-gradient(135deg, #c9a15d, #f1d596);
+      color: #2a1b0d;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.7),
+        0 0 12px rgba(241, 213, 150, 0.6);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .modal-close-btn:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 12px 24px rgba(0, 0, 0, 0.85),
+        0 0 18px rgba(241, 213, 150, 0.8);
+    }
+
+    .modal-close-btn:active {
+      transform: translateY(1px);
+      box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.9),
+        0 0 10px rgba(241, 213, 150, 0.6);
+    }
+
+    .modal-close-x {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 18px;
+      cursor: pointer;
+      color: #e4d5b9;
+      opacity: 0.8;
+      transition: opacity 0.12s ease, transform 0.12s ease;
+    }
+
+    .modal-close-x:hover {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
   </style>
 </head>
-
 <body>
-  <main class="page">
+  <div class="page">
     <header class="header">
-      <div class="logo">VikingLuck</div>
-      <h1 class="title">Adventskalender</h1>
+      <div class="brand">VikingLuck · VIP Adventskalender</div>
+      <h1 class="title">24 Tage · 24 exklusive Angebote</h1>
       <p class="subtitle">
-        Start am 20. November – jeden Tag öffnet sich genau ein Türchen.
+        Jeden Tag im Dezember öffnet sich ein neues Türchen mit einem persönlichen Vorteil für dein Spiel.
       </p>
     </header>
 
-    <section class="calendar-wrapper">
-      <div class="calendar-top-bar">
-        <div class="calendar-info">
-          Heute: <strong id="todayLabel"></strong>
-          <span id="calendarStatus"></span>
-        </div>
+    <main>
+      <section class="calendar" id="calendar"></section>
+      <p class="footer-note">
+        Alle Angebote sind zeitlich limitiert und gelten nur am jeweils zugehörigen Kalendertag. 
+        Details und Bedingungen werden pro Tür angezeigt.
+      </p>
+    </main>
+  </div>
 
-        <div class="legend">
-          <span><span class="legend-dot legend-dot--open"></span> Geöffnet</span>
-          <span><span class="legend-dot legend-dot--today"></span> Heute</span>
-          <span><span class="legend-dot legend-dot--locked"></span> Gesperrt</span>
-        </div>
-      </div>
-
-      <div class="calendar-grid" id="calendarGrid"></div>
-    </section>
-  </main>
-
-  <!-- MODAL -->
+  <!-- Modal -->
   <div class="modal-backdrop" id="modalBackdrop">
     <div class="modal">
-      <button class="modal-close" id="modalClose">×</button>
-      <div id="modalDayLabel" style="font-size:0.8rem;color:#616c80;margin-bottom:4px;"></div>
-      <div class="modal-title" id="modalTitle"></div>
-      <div id="modalBody" style="margin:12px 0; font-size:0.9rem;"></div>
-      <div id="modalHighlight" style="margin-top:8px;font-size:0.8rem;color:#6b5318;"></div>
-      <button class="btn-primary" id="modalCta">Zum Casino</button>
+      <div class="modal-close-x" id="modalCloseX">&times;</div>
+      <div class="modal-header">
+        <div class="modal-day" id="modalDay"></div>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-subtitle" id="modalSubtitle"></div>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer">
+        <div class="modal-hint">
+          Die Aktivierung erfolgt über deinen VIP Account Manager bzw. gemäß den kommunizierten Bedingungen.
+        </div>
+        <button class="modal-close-btn" id="modalCloseBtn">Tür schließen</button>
+      </div>
     </div>
   </div>
 
   <script>
-    /* === Startdatum === */
-    const START = new Date(2025, 10, 20); // 20.11.2025
-    START.setHours(0,0,0,0);
-
-    function today() {
-      const d = new Date();
-      d.setHours(0,0,0,0);
-      return d;
-    }
-
-    function currentIndex() {
-      const diff = (today() - START) / 86400000;
-      return Math.floor(diff) + 1;
-    }
-
-    /* === Inhalte (versteckt bis zum Tag) === */
+    // Adventskalender-Angebote – exakt nach deiner Vorgabe
     const offers = [
-      {day:1,title:"Startbonus",offer:"Individuell angepasster Einzahlungsbonus.",highlight:"VIP Manager kontaktiert dich."},
-      {day:2,title:"Freispiele",offer:"Freispiele auf ausgewählte Slots.",highlight:"Direkt nach Aktivierung spielbar."},
-      {day:3,title:"Cashback",offer:"Tägliches Verlust-Cashback möglich.",highlight:"Vor Spielstart anmelden."},
-      {day:4,title:"Highroller Bonus",offer:"Starker Reload für größere Sessions.",highlight:"Nur für klare Limits gedacht."},
-      {day:5,title:"Feature Runden",offer:"FS auf Feature Slots.",highlight:"Hohe Volatilität beachten."},
-      {day:6,title:"Direktor Überraschung",offer:"Direktor überprüft dein Konto.",highlight:"Mögliche Anpassungen."},
-      {day:7,title:"Wochenend-Schutz",offer:"Mehrere Tage Cashback.",highlight:"Nur auf vereinbarte Einsätze."},
-      {day:8,title:"Session Reload",offer:"Mehrere kleine Sessions abgesichert.",highlight:"Trenne deine Sessions sauber."},
-      {day:9,title:"Neuer Slot Test",offer:"FS auf neuen Slot.",highlight:"Gib dem VIP Manager Feedback."},
-      {day:10,title:"Tischspiele Cashback",offer:"Cashback für Live-Tische.",highlight:"Welche Tische zählen klären."},
-      {day:11,title:"Sportwetten Reload",offer:"Exklusiver Sportsbook Boost.",highlight:"Quoten & Märkte prüfen."},
-      {day:12,title:"VIP Status Check",offer:"Status & Limits Prüfung.",highlight:"Ziele mit VIP Manager besprechen."},
-      {day:13,title:"Monatsmitte Reload",offer:"Balance-Bonus für Mitte.",highlight:"Einsatzplan vorher festlegen."},
-      {day:14,title:"Klassiker Spins",offer:"FS auf bekannten Slots.",highlight:"Ideal für entspannte Sessions."},
-      {day:15,title:"Halbzeit Cashback",offer:"Zwischenbilanz-Anpassung.",highlight:"Offen kommunizieren."},
-      {day:16,title:"Abend Session Bonus",offer:"Nur für Abendzeit gültig.",highlight:"Start-/Endzeit definieren."},
-      {day:17,title:"High Volatility FS",offer:"FS auf volatile Slots.",highlight:"Nur für starke Nerven."},
-      {day:18,title:"Live Casino Schutz",offer:"Cashback für Tischspiele.",highlight:"Vorher anmelden."},
-      {day:19,title:"VIP Reload",offer:"Exklusiver VIP Bonus.",highlight:"Konto wird geprüft."},
-      {day:20,title:"Auszahlungsfokus",offer:"Schnellere Auszahlungen.",highlight:"Vorab informieren."},
-      {day:21,title:"Vorweihnachtsboost",offer:"Kontrollierter Reload.",highlight:"Grenzen definieren."},
-      {day:22,title:"Risikopolster",offer:"Erhöhter Cashback.",highlight:"Nur bei klarem Limit."},
-      {day:23,title:"Weihnachts Slots",offer:"FS auf Xmas Slots.",highlight:"Entspannt nutzen."},
       {
-        day:24,
-        title:"500 € Cash Special",
-        offer:"Bis zu 500 € Cash – keine Umsatzbedingungen.",
-        highlight:"Höhe wird individuell festgelegt."
+        day: 1,
+        teaser: "100€ Startbonus",
+        title: "100€ Bonus – starker Auftakt",
+        subtitle: "Perfekter Start in den Advent.",
+        body: `
+          <p>Zum 1. Dezember gibt es einen klaren Einstieg:</p>
+          <ul>
+            <li>Fester Bonus: <strong>100€</strong></li>
+            <li>Umsatzbedingungen: <strong>5x</strong></li>
+            <li>Gültig nur für den 1. Tag des Kalenders</li>
+          </ul>
+        `
+      },
+      {
+        day: 2,
+        teaser: "50% bis 250€",
+        title: "50% Einzahlungsbonus bis 250€",
+        subtitle: "Zusätzliche Balance für dein Spiel.",
+        body: `
+          <p>Am 2. Dezember sicherst du dir einen klassischen Reload:</p>
+          <ul>
+            <li><strong>50% Bonus</strong> auf deine Einzahlung</li>
+            <li>Maximaler Bonusbetrag: <strong>250€</strong></li>
+            <li>Umsatzbedingungen: <strong>3x</strong></li>
+          </ul>
+        `
+      },
+      {
+        day: 3,
+        teaser: "75% Cashback",
+        title: "75% Cashback auf die erste Einzahlung",
+        subtitle: "Hohe Sicherheit für deinen ersten Einsatz.",
+        body: `
+          <p>Dein Schutzschirm für den 3. Dezember:</p>
+          <ul>
+            <li><strong>75% Cashback</strong> auf deine erste Einzahlung des Tages</li>
+            <li>Gilt nur, falls der Spieltag insgesamt im Minus endet</li>
+            <li>Auszahlung als Cashback, gemäß VIP-Bedingungen</li>
+          </ul>
+        `
+      },
+      {
+        day: 4,
+        teaser: "Sport oder Casino",
+        title: "50€ Freiwette ODER 50€ Casino-Bonus",
+        subtitle: "Du entscheidest: Sportsbook oder Casino.",
+        body: `
+          <p>Am 4. Dezember hast du die Wahl:</p>
+          <ul>
+            <li><strong>50€ Freiwette</strong> im Sportsbook ODER</li>
+            <li><strong>50€ Casino-Bonus</strong> mit <strong>3x</strong> Umsatz</li>
+            <li>Nur eine der beiden Optionen ist aktivierbar</li>
+          </ul>
+        `
+      },
+      {
+        day: 5,
+        teaser: "Wochenendpaket",
+        title: "Wochenend-Bonuspaket",
+        subtitle: "Kombination aus Bonus und Cashback.",
+        body: `
+          <p>Zum Wochenende gibt es ein Paket-Angebot:</p>
+          <ul>
+            <li><strong>100€ Bonus</strong> mit <strong>3x</strong> Umsatz</li>
+            <li><strong>40% Cashback</strong> auf Verluste über das gesamte Wochenende</li>
+            <li>Maximaler Cashback-Betrag: <strong>500€</strong>, Umsatz <strong>1x</strong></li>
+          </ul>
+        `
+      },
+      {
+        day: 6,
+        teaser: "5 Tickets",
+        title: "5 Tickets für die Ticketkampagne",
+        subtitle: "Mehr Chancen in der laufenden Kampagne.",
+        body: `
+          <p>Am 6. Dezember sicherst du dir direkt:</p>
+          <ul>
+            <li><strong>5 zusätzliche Tickets</strong> für die laufende Ticketkampagne</li>
+            <li>Tickets werden deinem Konto gutgeschrieben</li>
+            <li>Teilnahmebedingungen gemäß Kampagnenregeln</li>
+          </ul>
+        `
+      },
+      {
+        day: 7,
+        teaser: "Monatscashback",
+        title: "5% Monatscashback für Dezember",
+        subtitle: "Rückversicherung für den gesamten Monat.",
+        body: `
+          <p>Dieser Tag wirkt langfristig:</p>
+          <ul>
+            <li><strong>5% Cashback</strong> auf deine Nettoverluste im Dezember</li>
+            <li>Auszahlung nach Monatsende</li>
+            <li>Genaue Abrechnung gemäß VIP-Regelung</li>
+          </ul>
+        `
+      },
+      {
+        day: 8,
+        teaser: "50€ Bonus",
+        title: "50€ Bonus",
+        subtitle: "Solider Zwischenboost.",
+        body: `
+          <p>Zum 8. Dezember gibt es:</p>
+          <ul>
+            <li>Fester Bonus: <strong>50€</strong></li>
+            <li>Umsatzbedingungen: <strong>3x</strong></li>
+            <li>Gültig nur am 8. Dezember</li>
+          </ul>
+        `
+      },
+      {
+        day: 9,
+        teaser: "50% bis 150€",
+        title: "50% Einzahlungsbonus bis 150€",
+        subtitle: "Mehr Spielraum für deine Einzahlung.",
+        body: `
+          <p>Am 9. Dezember:</p>
+          <ul>
+            <li><strong>50% Bonus</strong> auf deine Einzahlung</li>
+            <li>Maximaler Bonusbetrag: <strong>150€</strong></li>
+            <li>Umsatzbedingungen: <strong>3x</strong></li>
+          </ul>
+        `
+      },
+      {
+        day: 10,
+        teaser: "5 Tickets",
+        title: "5 Tickets für die Ticketkampagne",
+        subtitle: "Zusätzliche Gewinnchancen.",
+        body: `
+          <p>Am 10. Dezember warten:</p>
+          <ul>
+            <li><strong>5 weitere Tickets</strong> für die Ticketkampagne</li>
+            <li>Direkte Gutschrift auf dein Kampagnenkonto</li>
+          </ul>
+        `
+      },
+      {
+        day: 11,
+        teaser: "50€ Cashback",
+        title: "50€ Cashback Fixbetrag",
+        subtitle: "Direkte Entlastung bei Verlusten.",
+        body: `
+          <p>Am 11. Dezember:</p>
+          <ul>
+            <li>Fixer Cashback-Betrag: <strong>50€</strong></li>
+            <li>Gilt, wenn dein Tagessaldo negativ ist</li>
+            <li>Umsatzbedingungen: <strong>1x</strong></li>
+          </ul>
+        `
+      },
+      {
+        day: 12,
+        teaser: "5 Tickets",
+        title: "5 Tickets für die Ticketkampagne",
+        subtitle: "Kontinuierliche Extra-Chancen.",
+        body: `
+          <p>Am 12. Dezember erhältst du:</p>
+          <ul>
+            <li><strong>5 zusätzliche Tickets</strong> für die Ticketkampagne</li>
+            <li>Tickets werden automatisch verbucht</li>
+          </ul>
+        `
+      },
+      {
+        day: 13,
+        teaser: "50% Cashback",
+        title: "50% Cashback bis 150€",
+        subtitle: "Starkes Sicherheitsnetz für den Tag.",
+        body: `
+          <p>Der 13. Dezember bringt dir:</p>
+          <ul>
+            <li><strong>50% Cashback</strong> auf deine Nettoverluste des Tages</li>
+            <li>Maximaler Cashback-Betrag: <strong>150€</strong></li>
+            <li>Auszahlung mit <strong>1x</strong> Umsatz</li>
+          </ul>
+        `
+      },
+      {
+        day: 14,
+        teaser: "50€ Bonus",
+        title: "50€ Bonus",
+        subtitle: "Gerader, klarer Bonus-Tag.",
+        body: `
+          <p>Am 14. Dezember:</p>
+          <ul>
+            <li>Fester Bonus: <strong>50€</strong></li>
+            <li>Umsatzbedingungen: <strong>3x</strong></li>
+          </ul>
+        `
+      },
+      {
+        day: 15,
+        teaser: "5 Tickets",
+        title: "5 Tickets für die Ticketkampagne",
+        subtitle: "Mehr Volumen im Ticketpott.",
+        body: `
+          <p>Zum 15. Dezember:</p>
+          <ul>
+            <li><strong>5 zusätzliche Tickets</strong> für die Ticketkampagne</li>
+          </ul>
+        `
+      },
+      {
+        day: 16,
+        teaser: "50% bis 100€",
+        title: "50% Einzahlungsbonus bis 100€",
+        subtitle: "Effizienter Reload.",
+        body: `
+          <p>Am 16. Dezember:</p>
+          <ul>
+            <li><strong>50% Bonus</strong> auf deine Einzahlung</li>
+            <li>Maximaler Bonusbetrag: <strong>100€</strong></li>
+            <li>Umsatzbedingungen: <strong>3x</strong></li>
+          </ul>
+        `
+      },
+      {
+        day: 17,
+        teaser: "5 Tickets",
+        title: "5 Tickets für die Ticketkampagne",
+        subtitle: "Konstante Teilnahmechance.",
+        body: `
+          <p>Am 17. Dezember:</p>
+          <ul>
+            <li><strong>5 Tickets</strong> zusätzlich für die Ticketkampagne</li>
+          </ul>
+        `
+      },
+      {
+        day: 18,
+        teaser: "50€ Bonus",
+        title: "50€ Bonus",
+        subtitle: "Zusätzliche Balance vor dem Endspurt.",
+        body: `
+          <p>Am 18. Dezember:</p>
+          <ul>
+            <li>Fester Bonus: <strong>50€</strong></li>
+            <li>Umsatzbedingungen: <strong>3x</strong></li>
+          </ul>
+        `
+      },
+      {
+        day: 19,
+        teaser: "5 Tickets",
+        title: "5 Tickets für die Ticketkampagne",
+        subtitle: "Noch mehr Ziehungs-Chancen.",
+        body: `
+          <p>Der 19. Dezember bringt dir:</p>
+          <ul>
+            <li><strong>5 zusätzliche Tickets</strong> für die Ticketkampagne</li>
+          </ul>
+        `
+      },
+      {
+        day: 20,
+        teaser: "50% bis 150€",
+        title: "50% Einzahlungsbonus bis 150€",
+        subtitle: "Starker Bonus kurz vor den Feiertagen.",
+        body: `
+          <p>Am 20. Dezember:</p>
+          <ul>
+            <li><strong>50% Bonus</strong> auf deine Einzahlung</li>
+            <li>Maximaler Bonusbetrag: <strong>150€</strong></li>
+            <li>Umsatzbedingungen: <strong>3x</strong></li>
+          </ul>
+        `
+      },
+      {
+        day: 21,
+        teaser: "5 Tickets",
+        title: "5 Tickets für die Ticketkampagne",
+        subtitle: "Vor-Endspurt in der Kampagne.",
+        body: `
+          <p>Am 21. Dezember:</p>
+          <ul>
+            <li><strong>5 weitere Tickets</strong> für die Ticketkampagne</li>
+          </ul>
+        `
+      },
+      {
+        day: 22,
+        teaser: "60% Cashback",
+        title: "60% Cashback auf die erste Einzahlung",
+        subtitle: "Hoher Schutz kurz vor Weihnachten.",
+        body: `
+          <p>Am 22. Dezember steht Sicherheit im Fokus:</p>
+          <ul>
+            <li><strong>60% Cashback</strong> auf deine erste Einzahlung des Tages</li>
+            <li>Gültig, wenn der Tag insgesamt im Minus endet</li>
+            <li>Umsatzbedingungen: <strong>1x</strong></li>
+          </ul>
+        `
+      },
+      {
+        day: 23,
+        teaser: "5 Tickets",
+        title: "5 Tickets für die Ticketkampagne",
+        subtitle: "Letzte Ticketchance vor Heiligabend.",
+        body: `
+          <p>Am 23. Dezember:</p>
+          <ul>
+            <li><strong>5 zusätzliche Tickets</strong> für die Ticketkampagne</li>
+          </ul>
+        `
+      },
+      {
+        day: 24,
+        teaser: "500€ Weihnachtsbonus",
+        title: "Weihnachtsbonus 500€",
+        subtitle: "Das große Finale des Adventskalenders.",
+        body: `
+          <p>Zum 24. Dezember gibt es das Highlight:</p>
+          <ul>
+            <li>Fester Weihnachtsbonus: <strong>500€</strong></li>
+            <li>Umsatzbedingungen gemäß individueller VIP-Abstimmung</li>
+            <li>Nur am 24. Dezember aktivierbar</li>
+          </ul>
+        `
       }
     ];
 
-    const grid = document.getElementById("calendarGrid");
+    const calendarEl = document.getElementById("calendar");
     const modalBackdrop = document.getElementById("modalBackdrop");
-    const modalClose = document.getElementById("modalClose");
+    const modalDay = document.getElementById("modalDay");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalSubtitle = document.getElementById("modalSubtitle");
+    const modalBody = document.getElementById("modalBody");
+    const modalCloseBtn = document.getElementById("modalCloseBtn");
+    const modalCloseX = document.getElementById("modalCloseX");
 
-    function openModal(d) {
-      const idx = currentIndex();
-      if (d.day > idx) return;
-
-      document.getElementById("modalDayLabel").textContent = `Tür ${String(d.day).padStart(2,"0")}`;
-      document.getElementById("modalTitle").textContent = d.title;
-      document.getElementById("modalBody").innerHTML = d.offer;
-      document.getElementById("modalHighlight").textContent = d.highlight;
-      modalBackdrop.classList.add("modal-backdrop--visible");
-
-      localStorage.setItem("VLopened", JSON.stringify([...new Set([...getOpened(), d.day])]));
+    function openModal(offer) {
+      modalDay.textContent = "Tür " + offer.day;
+      modalTitle.textContent = offer.title;
+      modalSubtitle.textContent = offer.subtitle || "";
+      modalBody.innerHTML = offer.body;
+      modalBackdrop.style.display = "flex";
     }
 
     function closeModal() {
-      modalBackdrop.classList.remove("modal-backdrop--visible");
+      modalBackdrop.style.display = "none";
     }
 
-    modalClose.onclick = closeModal;
-    modalBackdrop.onclick = e => { if(e.target===modalBackdrop) closeModal(); }
+    modalBackdrop.addEventListener("click", (e) => {
+      if (e.target === modalBackdrop) {
+        closeModal();
+      }
+    });
 
-    function getOpened() {
-      try { return JSON.parse(localStorage.getItem("VLopened")) || []; }
-      catch { return []; }
-    }
+    modalCloseBtn.addEventListener("click", closeModal);
+    modalCloseX.addEventListener("click", closeModal);
 
-    function render() {
-      const idx = currentIndex();
-      document.getElementById("todayLabel").textContent = formatDate(today());
-      document.getElementById("calendarStatus").innerHTML =
-        ` – Tür <span class="highlight">${idx}</span> ist freigeschaltet.`;
+    // Kalender rendern
+    offers.forEach((offer) => {
+      const door = document.createElement("article");
+      door.className = "door";
+      if (offer.day === 1 || offer.day === 5 || offer.day === 24) {
+        door.classList.add("door-special");
+      }
 
-      const opened = getOpened();
-      grid.innerHTML = "";
+      door.innerHTML = `
+        <div class="door-label">Tür ${offer.day}</div>
+        <div class="door-number">${offer.day}</div>
+        <div class="door-teaser">${offer.teaser || ""}</div>
+        <div class="door-highlight"></div>
+      `;
 
-      offers.forEach(offer => {
-        const c = document.createElement("button");
-        c.className = "day";
-        c.dataset.day = offer.day;
-
-        const unlocked = offer.day <= idx;
-        const isOpen = opened.includes(offer.day);
-        const isToday = offer.day === idx;
-
-        if (!unlocked) c.classList.add("day--locked");
-        if (isOpen) c.classList.add("day--open");
-        if (isToday) c.classList.add("day--today");
-
-        c.innerHTML = `
-          <div class="day-number">${String(offer.day).padStart(2,"0")}</div>
-          <div class="day-label">Überraschung</div>
-          <div class="day-ribbon">Heute</div>
-        `;
-
-        c.onclick = () => {
-          if (!unlocked) return;
-          openModal(offer);
-          c.classList.add("day--open");
-        };
-
-        grid.appendChild(c);
-      });
-    }
-
-    function formatDate(d) {
-      const m = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
-      return `${d.getDate()}. ${m[d.getMonth()]} ${d.getFullYear()}`;
-    }
-
-    render();
+      door.addEventListener("click", () => openModal(offer));
+      calendarEl.appendChild(door);
+    });
   </script>
-
 </body>
 </html>

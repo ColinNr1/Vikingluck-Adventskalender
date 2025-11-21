@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>VikingLuck Adventskalender</title>
@@ -15,7 +15,10 @@
     body {
       font-family: Georgia, "Times New Roman", serif;
       background:
-        radial-gradient(circle at top, #4c1018 0%, #1b0308 45%, #050104 100%);
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.80)),
+        url("https://i.postimg.cc/QF8dw4jB/Chat-GPT-Image-20-Nov-2025-16-41-38.png")
+          no-repeat center center fixed;
+      background-size: cover;
       color: #fdf4e3;
       min-height: 100vh;
       overflow-x: hidden;
@@ -501,20 +504,20 @@
 
       <label class="login-label" id="loginLabelUser">Account Manager</label>
       <select id="username" class="login-input" onchange="switchLoginLanguage()">
-        <option value="">Bitte auswählen</option>
+        <option value="">Select</option>
         <option value="Colin">Colin</option>
         <option value="Fillippo">Fillippo</option>
-        <option value="Lyndon">Lyndon</option>
-        <option value="Andre">Andre</option>
-        <option value="Yahya">Yahya</option>
+        <option value="Juan">Juan</option>
+        <option value="Geoffrey">Geoffrey</option>
+        <option value="Matthew">Matthew</option>
       </select>
 
-      <label class="login-label" id="loginLabelPass">Passwort</label>
-      <input id="password" type="password" class="login-input" placeholder="Passwort eingeben" />
+      <label class="login-label" id="loginLabelPass">Password</label>
+      <input id="password" type="password" class="login-input" placeholder="Enter password" />
 
       <button class="login-btn" id="loginButton" onclick="login()">Login</button>
 
-      <p id="loginError" class="login-error" style="display:none;">Ungültige Zugangsdaten</p>
+      <p id="loginError" class="login-error" style="display:none;">Invalid login details</p>
     </div>
   </div>
 
@@ -527,17 +530,17 @@
 
   <div class="page" id="calendarPage" style="display:none;">
     <header class="header">
-      <div class="brand" id="brandText">VikingLuck · VIP Adventskalender</div>
-      <h1 class="title" id="titleText">24 Tage · 24 exklusive Angebote</h1>
+      <div class="brand" id="brandText">VikingLuck · VIP Advent Calendar</div>
+      <h1 class="title" id="titleText">24 Days · 24 Exclusive Offers</h1>
       <p class="subtitle" id="subtitleText">
-        Standard: Türen öffnen sich im Dezember am jeweiligen Kalendertag – über Admin-Passwort kannst du den Testmodus aktivieren.
+        Standard mode: Doors open on the respective calendar day – Admin password can enable Test Mode.
       </p>
     </header>
 
     <main>
       <section class="calendar" id="calendar"></section>
       <p class="footer-note" id="footerNoteText">
-        Im Live-Betrieb gilt: Jedes Angebot ist streng an seinen Kalendertag gebunden. Im Testmodus sind alle Türen freigeschaltet.
+        In Live mode, every offer is strictly bound to its calendar day. In Test mode, all doors are unlocked.
       </p>
     </main>
   </div>
@@ -555,7 +558,7 @@
       <div class="modal-body" id="modalBody"></div>
       <div class="modal-footer">
         <div class="modal-hint" id="modalHint">
-          Aktivierung erfolgt über deinen VIP Account Manager bzw. wie mit dir persönlich vereinbart.
+          Activation is handled by your VIP Account Manager.
         </div>
         <div class="modal-actions" id="modalActions"></div>
       </div>
@@ -574,26 +577,55 @@
       const btn = document.getElementById("loginButton");
       const err = document.getElementById("loginError");
 
-      if (user === "Yahya") {
-        // Spanisch
-        title.textContent = "VikingLuck · Acceso VIP";
-        labelUser.textContent = "Gestor de cuenta";
-        labelPass.textContent = "Contraseña";
-        passInput.placeholder = "Introducir contraseña";
-        btn.textContent = "Acceder";
-        err.textContent = "Datos de acceso inválidos";
-      } else {
+      if (user === "Colin" || user === "Fillippo") {
         // Deutsch
+        document.documentElement.lang = "de";
         title.textContent = "VikingLuck · VIP Login";
         labelUser.textContent = "Account Manager";
         labelPass.textContent = "Passwort";
         passInput.placeholder = "Passwort eingeben";
         btn.textContent = "Login";
         err.textContent = "Ungültige Zugangsdaten";
+      } else if (user === "Juan") {
+        // Spanisch
+        document.documentElement.lang = "es";
+        title.textContent = "VikingLuck · Acceso VIP";
+        labelUser.textContent = "Gestor de cuenta";
+        labelPass.textContent = "Contraseña";
+        passInput.placeholder = "Introducir contraseña";
+        btn.textContent = "Acceder";
+        err.textContent = "Datos de acceso inválidos";
+      } else if (user === "Geoffrey") {
+        // Französisch
+        document.documentElement.lang = "fr";
+        title.textContent = "VikingLuck · Connexion VIP";
+        labelUser.textContent = "Gestionnaire";
+        labelPass.textContent = "Mot de passe";
+        passInput.placeholder = "Entrer le mot de passe";
+        btn.textContent = "Connexion";
+        err.textContent = "Données d’accès invalides";
+      } else if (user === "Matthew") {
+        // Englisch
+        document.documentElement.lang = "en";
+        title.textContent = "VikingLuck · VIP Login";
+        labelUser.textContent = "Account Manager";
+        labelPass.textContent = "Password";
+        passInput.placeholder = "Enter password";
+        btn.textContent = "Login";
+        err.textContent = "Invalid login details";
+      } else {
+        // Default Englisch
+        document.documentElement.lang = "en";
+        title.textContent = "VikingLuck · VIP Login";
+        labelUser.textContent = "Account Manager";
+        labelPass.textContent = "Password";
+        passInput.placeholder = "Enter password";
+        btn.textContent = "Login";
+        err.textContent = "Invalid login details";
       }
     }
 
-    let userLanguage = "de";
+    let userLanguage = "en";
 
     function login() {
       const user = document.getElementById("username").value;
@@ -602,26 +634,57 @@
 
       if (!user || !pw) {
         err.style.display = "block";
-        err.textContent = (user === "Yahya")
-          ? "Por favor, completa todos los campos."
-          : "Bitte alles ausfüllen.";
+        const lang = document.documentElement.lang || "en";
+        if (lang === "de") {
+          err.textContent = "Bitte alles ausfüllen.";
+        } else if (lang === "es") {
+          err.textContent = "Por favor, completa todos los campos.";
+        } else if (lang === "fr") {
+          err.textContent = "Veuillez remplir tous les champs.";
+        } else {
+          err.textContent = "Please fill all fields.";
+        }
         return;
       }
 
-      if (pw !== user + "67") {
+      // Einheitliches Passwort für alle: 1234
+      if (pw !== "1234") {
         err.style.display = "block";
-        err.textContent = (user === "Yahya")
-          ? "Datos de acceso inválidos"
-          : "Ungültige Zugangsdaten";
+        const lang = document.documentElement.lang || "en";
+        if (lang === "de") {
+          err.textContent = "Ungültige Zugangsdaten";
+        } else if (lang === "es") {
+          err.textContent = "Datos de acceso inválidos";
+        } else if (lang === "fr") {
+          err.textContent = "Données d’accès invalides";
+        } else {
+          err.textContent = "Invalid login details";
+        }
         return;
       }
 
-      userLanguage = (user === "Yahya") ? "es" : "de";
+      // Sprache nach Manager
+      userLanguage =
+        (user === "Colin" || user === "Fillippo") ? "de" :
+        (user === "Juan") ? "es" :
+        (user === "Geoffrey") ? "fr" :
+        "en";
 
       document.getElementById("loginScreen").style.display = "none";
       document.getElementById("calendarPage").style.display = "block";
 
-      if (userLanguage === "es") {
+      // Oberfläche je nach Sprache anpassen
+      if (userLanguage === "de") {
+        document.documentElement.lang = "de";
+        document.getElementById("brandText").textContent = "VikingLuck · VIP Adventskalender";
+        document.getElementById("titleText").textContent = "24 Tage · 24 exklusive Angebote";
+        document.getElementById("subtitleText").textContent =
+          "Standard: Türen öffnen sich im Dezember am jeweiligen Kalendertag – über Admin-Passwort kannst du den Testmodus aktivieren.";
+        document.getElementById("footerNoteText").textContent =
+          "Im Live-Betrieb gilt: Jedes Angebot ist streng an seinen Kalendertag gebunden. Im Testmodus sind alle Türen freigeschaltet.";
+        document.getElementById("modalHint").textContent =
+          "Aktivierung erfolgt über deinen VIP Account Manager bzw. wie mit dir persönlich vereinbart.";
+      } else if (userLanguage === "es") {
         document.documentElement.lang = "es";
         document.getElementById("brandText").textContent = "VikingLuck · Calendario VIP de Adviento";
         document.getElementById("titleText").textContent = "24 días · 24 ofertas exclusivas";
@@ -631,6 +694,26 @@
           "En modo en vivo, cada oferta de Adviento está estrictamente vinculada a su día de calendario. En modo de prueba, todas las puertas están desbloqueadas.";
         document.getElementById("modalHint").textContent =
           "La activación se realiza a través de tu gestor VIP o según lo acordado contigo.";
+      } else if (userLanguage === "fr") {
+        document.documentElement.lang = "fr";
+        document.getElementById("brandText").textContent = "VikingLuck · Calendrier VIP de l’Avent";
+        document.getElementById("titleText").textContent = "24 jours · 24 offres exclusives";
+        document.getElementById("subtitleText").textContent =
+          "Les portes s’ouvrent en fonction du jour du calendrier – le mot de passe Admin active le mode test.";
+        document.getElementById("footerNoteText").textContent =
+          "En mode Live, chaque offre est liée strictement à son jour de calendrier. En mode Test, toutes les portes sont ouvertes.";
+        document.getElementById("modalHint").textContent =
+          "L’activation est gérée par votre Account Manager VIP.";
+      } else {
+        document.documentElement.lang = "en";
+        document.getElementById("brandText").textContent = "VikingLuck · VIP Advent Calendar";
+        document.getElementById("titleText").textContent = "24 Days · 24 Exclusive Offers";
+        document.getElementById("subtitleText").textContent =
+          "From 1st to 24th December a new VIP door unlocks each day. Test Mode can be enabled via admin password.";
+        document.getElementById("footerNoteText").textContent =
+          "In Live mode, every Advent offer is strictly bound to its calendar day. In Test mode, all doors are unlocked.";
+        document.getElementById("modalHint").textContent =
+          "Activation is handled by your VIP Account Manager.";
       }
 
       // Kalender anzeigen in der richtigen Sprache
@@ -656,7 +739,6 @@
     createSnow();
 
     /* ---------------- Angebote (DE & ES) ---------------- */
-
     const offersDe = [
       {
         day: 1,

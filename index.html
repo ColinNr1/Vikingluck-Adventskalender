@@ -133,7 +133,7 @@
 
     .header {
       text-align: center;
-      margin-bottom: 25px;
+      margin-bottom: 18px;
     }
 
     .brand {
@@ -158,11 +158,40 @@
       opacity: 0.95;
     }
 
+    .settings-bar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin: 10px 0 4px;
+      flex-wrap: wrap;
+      font-size: 11px;
+    }
+
+    .toggle-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(255, 215, 160, 0.7);
+      background: rgba(40, 20, 10, 0.9);
+      color: #f8e1c5;
+      font-size: 11px;
+      padding: 4px 10px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      box-shadow:
+        0 6px 12px rgba(0, 0, 0, 0.6),
+        0 0 10px rgba(255, 210, 150, 0.4);
+    }
+
+    .toggle-btn:hover {
+      filter: brightness(1.05);
+      transform: translateY(-0.5px);
+    }
+
     .calendar {
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 14px;
-      margin-top: 26px;
+      margin-top: 10px;
     }
 
     @media (max-width: 900px) {
@@ -458,13 +487,16 @@
       <label class="login-label" id="loginLabelUser">Account Manager</label>
       <select id="username" class="login-input" onchange="switchLoginLanguage()">
         <option value="" disabled selected hidden>Select account manager</option>
-        <option value="Colin">Colin</option>
-        <option value="Fillippo">Fillippo</option>
-        <option value="Lyndon">Lyndon</option>
         <option value="Andre">Andre</option>
-        <option value="Juan">Juan</option>
+        <option value="Andrea">Andrea</option>
+        <option value="Colin">Colin</option>
+        <option value="David">David</option>
+        <option value="Fillippo">Fillippo</option>
         <option value="Geoffrey">Geoffrey</option>
+        <option value="Juan">Juan</option>
+        <option value="Lyndon">Lyndon</option>
         <option value="Matthew">Matthew</option>
+        <option value="Yahya">Yahya</option>
       </select>
 
       <label class="login-label" id="loginLabelPass">Password</label>
@@ -492,6 +524,11 @@
       </p>
     </header>
 
+    <div class="settings-bar">
+      <button id="langToggle" class="toggle-btn" style="display:none;"></button>
+      <button id="currencyToggle" class="toggle-btn" style="display:none;"></button>
+    </div>
+
     <main>
       <section class="calendar" id="calendar"></section>
       <p class="footer-note" id="footerNoteText">
@@ -512,6 +549,7 @@
 
   <script>
     let userLanguage = "de";
+
     const calendarEl = document.getElementById("calendar");
     const modalBackdrop = document.getElementById("modalBackdrop");
     const modalTitle = document.getElementById("modalTitle");
@@ -523,10 +561,23 @@
     const adminToggle = document.getElementById("adminToggle");
     const adminIndicator = document.getElementById("adminIndicator");
 
+    const langToggleBtn = document.getElementById("langToggle");
+    const currencyToggleBtn = document.getElementById("currencyToggle");
+
     let testMode = false;
     const doorEntries = [];
     const today = new Date();
     const year = today.getFullYear();
+
+    // Manager-/Language-/Currency-Status
+    let currentManager = null;
+    let baseLanguage = "de";
+    let secondaryLanguage = null;
+    let currentLanguage = "de";
+
+    let baseCurrency = "EUR";
+    let currentCurrency = "EUR";
+    let secondaryCurrency = null;
 
     /* ---------------- Angebote DE ---------------- */
     const offersDe = [
@@ -874,7 +925,7 @@
       }
     ];
 
-    /* ---------------- Angebote ES (vorher definiert) ---------------- */
+    /* ---------------- Angebote ES ---------------- */
     const offersEs = [
       {
         day: 1,
@@ -1220,7 +1271,7 @@
       }
     ];
 
-    /* ---------------- Angebote EN (stilistisch angepasst, kompakter) ---------------- */
+    /* ---------------- Angebote EN (generisch, für flexible VIP-Struktur) ---------------- */
     const offersEn = offersDe.map(o => ({
       day: o.day,
       title: `Day ${o.day} – Exclusive VIP offer`,
@@ -1239,7 +1290,7 @@
       emailText: `I have just opened door ${o.day} in the VikingLuck Advent Calendar and would like to activate the VIP offer for this day, adapted to my account.`
     }));
 
-    /* ---------------- Angebote FR (stilistisch angepasst, kompakter) ---------------- */
+    /* ---------------- Angebote FR (generisch, VIP-Struktur) ---------------- */
     const offersFr = offersDe.map(o => ({
       day: o.day,
       title: `Jour ${o.day} – Offre VIP exclusive`,
@@ -1251,11 +1302,30 @@
         <p>Cette porte débloque une offre VIP sur mesure pour vous :</p>
         <ul>
           <li>Structure exacte (bonus / cashback / tickets) définie avec votre gestionnaire VIP.</li>
-          <li>L’objectif : transformer ce jour en vrai levier, pas en simple tentative.</li>
+          <li>Objectif : transformer ce jour en vrai levier, pas en simple tentative.</li>
         </ul>
         <p>Répondez à l’e-mail pour activer l’offre du jour ${o.day} adaptée à votre profil.</p>
       `,
       emailText: `Je viens d’ouvrir la porte ${o.day} du calendrier de l’Avent VikingLuck et je souhaite activer l’offre VIP pour ce jour, adaptée à mon compte.`
+    }));
+
+    /* ---------------- Angebote IT (generisch für Andrea) ---------------- */
+    const offersIt = offersDe.map(o => ({
+      day: o.day,
+      title: `Giorno ${o.day} – Offerta VIP esclusiva`,
+      subtitle: "Bonus personalizzato per un gioco serio.",
+      quote: o.quote
+        ? "Stessa regola in un’altra lingua: prima il saldo, poi le emozioni."
+        : "",
+      bodyHtml: `
+        <p>Questa casella sblocca un’offerta VIP su misura per te:</p>
+        <ul>
+          <li>La struttura esatta (bonus / cashback / ticket) viene definita direttamente con il tuo VIP Manager.</li>
+          <li>Usa questo giorno come leva strategica – non come semplice tentativo casuale.</li>
+        </ul>
+        <p>Rispondi all’e-mail per attivare l’offerta del giorno ${o.day} adattata al tuo conto.</p>
+      `,
+      emailText: `Ho appena aperto la casella ${o.day} del calendario dell’Avvento VikingLuck e vorrei attivare l’offerta VIP di oggi, adattata al mio conto.`
     }));
 
     let offers = offersDe;
@@ -1270,20 +1340,39 @@
       const btn = document.getElementById("loginButton");
       const err = document.getElementById("loginError");
 
-      if (["Colin", "Fillippo", "Lyndon", "Andre"].includes(user)) {
+      // Default: English fallback
+      function setEn() {
+        document.documentElement.lang = "en";
+        userLanguage = "en";
+        title.textContent = "VikingLuck · VIP Login";
+        labelUser.textContent = "Account Manager";
+        labelPass.textContent = "Password";
+        passInput.placeholder = "Enter password";
+        btn.textContent = "Login";
+        err.textContent = "Invalid login details";
+      }
+
+      if (["Andre", "Colin", "Fillippo", "Lyndon"].includes(user)) {
         document.documentElement.lang = "de";
         userLanguage = "de";
-
         title.textContent = "VikingLuck · VIP Login";
         labelUser.textContent = "Account Manager";
         labelPass.textContent = "Passwort";
         passInput.placeholder = "Passwort eingeben";
         btn.textContent = "Login";
         err.textContent = "Ungültige Zugangsdaten";
-      } else if (user === "Juan") {
+      } else if (user === "Andrea") {
+        document.documentElement.lang = "it";
+        userLanguage = "it";
+        title.textContent = "VikingLuck · Accesso VIP";
+        labelUser.textContent = "Account manager";
+        labelPass.textContent = "Password";
+        passInput.placeholder = "Inserisci la password";
+        btn.textContent = "Accedi";
+        err.textContent = "Dati di accesso non validi";
+      } else if (["David", "Juan", "Yahya"].includes(user)) {
         document.documentElement.lang = "es";
         userLanguage = "es";
-
         title.textContent = "VikingLuck · Acceso VIP";
         labelUser.textContent = "Gestor de cuenta";
         labelPass.textContent = "Contraseña";
@@ -1293,7 +1382,6 @@
       } else if (user === "Geoffrey") {
         document.documentElement.lang = "fr";
         userLanguage = "fr";
-
         title.textContent = "VikingLuck · Connexion VIP";
         labelUser.textContent = "Gestionnaire de compte";
         labelPass.textContent = "Mot de passe";
@@ -1301,15 +1389,9 @@
         btn.textContent = "Connexion";
         err.textContent = "Identifiants invalides";
       } else if (user === "Matthew") {
-        document.documentElement.lang = "en";
-        userLanguage = "en";
-
-        title.textContent = "VikingLuck · VIP Login";
-        labelUser.textContent = "Account Manager";
-        labelPass.textContent = "Password";
-        passInput.placeholder = "Enter password";
-        btn.textContent = "Login";
-        err.textContent = "Invalid login details";
+        setEn();
+      } else {
+        setEn();
       }
     }
 
@@ -1343,6 +1425,14 @@
           "Du 1er au 24 décembre, une nouvelle porte s'ouvre chaque jour avec une offre VIP personnalisée.";
         footer.textContent =
           "En mode réel, chaque offre est liée à son jour de calendrier. En mode test, toutes les portes sont déverrouillées.";
+      } else if (userLanguage === "it") {
+        document.documentElement.lang = "it";
+        brand.textContent = "VikingLuck · Calendario VIP dell'Avvento";
+        title.textContent = "24 giorni · 24 offerte esclusive";
+        subtitle.textContent =
+          "Dal 1° al 24 dicembre si apre ogni giorno una nuova casella con un'offerta VIP personalizzata.";
+        footer.textContent =
+          "In modalità live, ogni offerta è rigidamente legata al suo giorno di calendario. In modalità test, tutte le caselle sono sbloccate.";
       } else {
         document.documentElement.lang = "en";
         brand.textContent = "VikingLuck · VIP Advent Calendar";
@@ -1358,8 +1448,106 @@
       if (userLanguage === "de") offers = offersDe;
       else if (userLanguage === "es") offers = offersEs;
       else if (userLanguage === "fr") offers = offersFr;
+      else if (userLanguage === "it") offers = offersIt;
       else offers = offersEn;
     }
+
+    function labelLanguage(code) {
+      if (code === "de") return "DE";
+      if (code === "es") return "ES";
+      if (code === "fr") return "FR";
+      if (code === "it") return "IT";
+      if (code === "en") return "EN";
+      return code ? code.toUpperCase() : "";
+    }
+
+    function currencyLabel(cur) {
+      if (cur === "CHF") return "CHF";
+      if (cur === "CAD") return "CAD";
+      return "€";
+    }
+
+    function setupToggleButtons() {
+      // Language toggle
+      if (secondaryLanguage) {
+        langToggleBtn.style.display = "inline-block";
+        langToggleBtn.textContent =
+          "Language: " +
+          labelLanguage(currentLanguage) +
+          " / " +
+          labelLanguage(secondaryLanguage);
+      } else {
+        langToggleBtn.style.display = "none";
+      }
+
+      // Currency toggle
+      if (secondaryCurrency) {
+        currencyToggleBtn.style.display = "inline-block";
+        currencyToggleBtn.textContent =
+          "Währung: " +
+          currencyLabel(currentCurrency) +
+          " / " +
+          currencyLabel(secondaryCurrency);
+      } else {
+        currencyToggleBtn.style.display = "none";
+      }
+    }
+
+    function initManagerSettings(user) {
+      currentManager = user;
+      baseLanguage = userLanguage;
+      currentLanguage = userLanguage;
+
+      baseCurrency = "EUR";
+      currentCurrency = "EUR";
+      secondaryLanguage = null;
+      secondaryCurrency = null;
+
+      // Andre, Colin, Fillippo, Lyndon – DE, EUR mit Knopf EUR/CHF
+      if (["Andre", "Colin", "Fillippo", "Lyndon"].includes(user)) {
+        secondaryCurrency = "CHF";
+      }
+      // Andrea – IT, EUR
+      else if (user === "Andrea") {
+        // nur Italienisch, keine Währungsumschaltung
+      }
+      // David, Juan, Yahya – ES + Knopf ES/EN, EUR
+      else if (["David", "Juan", "Yahya"].includes(user)) {
+        secondaryLanguage = "en";
+      }
+      // Geoffrey – FR mit Knopf FR/EN & EUR/CAD
+      else if (user === "Geoffrey") {
+        secondaryLanguage = "en";
+        secondaryCurrency = "CAD";
+      }
+      // Matthew – EN, EUR
+      else if (user === "Matthew") {
+        // keine Umschalter
+      }
+
+      setupToggleButtons();
+    }
+
+    langToggleBtn.addEventListener("click", () => {
+      if (!secondaryLanguage) return;
+      currentLanguage =
+        currentLanguage === baseLanguage ? secondaryLanguage : baseLanguage;
+      userLanguage = currentLanguage;
+      applyLanguageTexts();
+      setOffersForLanguage();
+      renderCalendar();
+      updateDoorLockStates();
+      setupToggleButtons();
+    });
+
+    currencyToggleBtn.addEventListener("click", () => {
+      if (!secondaryCurrency) return;
+      currentCurrency =
+        currentCurrency === baseCurrency ? secondaryCurrency : baseCurrency;
+      setupToggleButtons();
+      // Modal-Anzeige & Mailtext nutzen currentCurrency dynamisch,
+      // der Kalender selbst muss nicht neu gerendert werden.
+    });
 
     function login() {
       const user = document.getElementById("username").value;
@@ -1374,6 +1562,8 @@
           err.textContent = "Por favor, completa todos los campos.";
         } else if (userLanguage === "fr") {
           err.textContent = "Veuillez remplir tous les champs.";
+        } else if (userLanguage === "it") {
+          err.textContent = "Per favore compila tutti i campi.";
         } else {
           err.textContent = "Please fill in all fields.";
         }
@@ -1388,6 +1578,8 @@
           err.textContent = "Datos de acceso inválidos";
         } else if (userLanguage === "fr") {
           err.textContent = "Identifiants invalides";
+        } else if (userLanguage === "it") {
+          err.textContent = "Dati di accesso non validi";
         } else {
           err.textContent = "Invalid login details";
         }
@@ -1396,6 +1588,9 @@
 
       document.getElementById("loginScreen").style.display = "none";
       document.getElementById("calendarPage").style.display = "block";
+
+      // Manager-Settings basierend auf ausgewähltem AM
+      initManagerSettings(user);
 
       applyLanguageTexts();
       setOffersForLanguage();
@@ -1467,14 +1662,24 @@
       });
     }
 
+    function adjustCurrency(text) {
+      if (!text) return "";
+      if (currentCurrency === "CHF") {
+        return text.replace(/€\s?/g, "CHF ");
+      } else if (currentCurrency === "CAD") {
+        return text.replace(/€\s?/g, "CAD ");
+      }
+      return text;
+    }
+
     function openModal(offer, innerEl) {
-      modalTitle.textContent = offer.title;
+      modalTitle.textContent = adjustCurrency(offer.title);
       modalSubtitle.textContent = offer.subtitle || "";
       modalQuote.textContent = offer.quote || "";
       modalQuote.style.display = offer.quote ? "block" : "none";
-      modalBody.innerHTML = offer.bodyHtml || "";
+      modalBody.innerHTML = adjustCurrency(offer.bodyHtml || "");
 
-      let subject, greeting, lineOffer, closing, emailBtnLabel, closeLabel;
+      let subject, greeting, lineOffer, closing, emailBtnLabel, closeLabel, labelOffer;
 
       if (userLanguage === "es") {
         subject = "VikingLuck – Puerta " + offer.day + " abierta";
@@ -1483,6 +1688,7 @@
         closing = "Por favor, activad esta oferta de Adviento para mi cuenta.\n\nMuchas gracias.";
         emailBtnLabel = "Enviar oferta por correo";
         closeLabel = "Cerrar";
+        labelOffer = "Oferta:";
       } else if (userLanguage === "fr") {
         subject = "VikingLuck – Porte " + offer.day + " ouverte";
         greeting = "Bonjour,";
@@ -1490,13 +1696,24 @@
         closing = "Merci d'activer cette offre de l'Avent pour mon compte.\n\nMerci beaucoup.";
         emailBtnLabel = "Envoyer l'offre par e-mail";
         closeLabel = "Fermer";
+        labelOffer = "Offre :";
+      } else if (userLanguage === "it") {
+        subject = "VikingLuck – Casella " + offer.day + " aperta";
+        greeting = "Buongiorno,";
+        lineOffer = "ho appena aperto la casella " + offer.day + " nel calendario dell’Avvento di VikingLuck.";
+        closing = "Vi prego di attivare questa offerta dell’Avvento per il mio conto.\n\nGrazie mille.";
+        emailBtnLabel = "Invia offerta via e-mail";
+        closeLabel = "Chiudi";
+        labelOffer = "Offerta:";
       } else if (userLanguage === "en") {
         subject = "VikingLuck – Door " + offer.day + " opened";
         greeting = "Good morning,";
+
         lineOffer = "I have just opened door " + offer.day + " in the VikingLuck Advent Calendar.";
         closing = "Please activate this Advent offer for my account.\n\nThank you.";
         emailBtnLabel = "Send offer by email";
         closeLabel = "Close";
+        labelOffer = "Offer:";
       } else {
         subject = "VikingLuck – Tür " + offer.day + " geöffnet";
         greeting = "Guten Morgen,";
@@ -1504,12 +1721,15 @@
         closing = "Bitte das Angebot für mich aktivieren.\n\nVielen Dank.";
         emailBtnLabel = "Angebot per E-Mail senden";
         closeLabel = "Schließen";
+        labelOffer = "Angebot:";
       }
+
+      const emailOfferLine = adjustCurrency(offer.emailText || "");
 
       const bodyText = encodeURIComponent(
         greeting + "\n\n" +
         lineOffer + "\n\n" +
-        "Angebot:\n" + offer.emailText + "\n\n" +
+        labelOffer + "\n" + emailOfferLine + "\n\n" +
         closing
       );
 
